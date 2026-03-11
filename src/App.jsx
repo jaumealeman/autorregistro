@@ -1,4 +1,21 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
+import Navbar from './components/Navbar'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Wizard from './pages/Wizard'
+import Historial from './pages/Historial'
+import Configuracion from './pages/Configuracion'
+
+function Layout({ children }) {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      {children}
+    </div>
+  )
+}
 
 function App() {
   const { user, loading } = useAuth()
@@ -6,24 +23,36 @@ function App() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Cargando...</p>
+        <p className="text-gray-400 text-sm">Cargando...</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm px-6 py-4">
-        <h1 className="text-xl font-semibold text-gray-800">Registro Emocional</h1>
-      </header>
-      <main className="p-6">
-        {user ? (
-          <p className="text-gray-600">Bienvenido, {user.email}</p>
-        ) : (
-          <p className="text-gray-600">No has iniciado sesión.</p>
-        )}
-      </main>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
+        <Route path="/register" element={user ? <Navigate to="/" replace /> : <Register />} />
+
+        <Route path="/" element={
+          <ProtectedRoute>
+            <Layout><Wizard /></Layout>
+          </ProtectedRoute>
+        } />
+        <Route path="/historial" element={
+          <ProtectedRoute>
+            <Layout><Historial /></Layout>
+          </ProtectedRoute>
+        } />
+        <Route path="/configuracion" element={
+          <ProtectedRoute>
+            <Layout><Configuracion /></Layout>
+          </ProtectedRoute>
+        } />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
