@@ -39,6 +39,12 @@ export default function WizardContainer() {
     if (esUltimoPaso) {
       setSaving(true)
       setError(null)
+      if (user?.isGuest) {
+        await new Promise(r => setTimeout(r, 500))
+        setSaving(false)
+        navigate('/historial')
+        return
+      }
       const { error } = await supabase.from('registros').insert({
         user_id: user.id,
         ...formData,
