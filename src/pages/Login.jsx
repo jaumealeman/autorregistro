@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 export default function Login() {
-  const { signIn } = useAuth()
+  const { signIn, loginAsGuest } = useAuth()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -68,6 +68,15 @@ export default function Login() {
             Regístrate
           </Link>
         </p>
+
+        {import.meta.env.DEV && (
+          <button
+            onClick={() => { loginAsGuest(); navigate('/') }}
+            className="mt-3 w-full border border-dashed border-gray-300 text-gray-400 rounded-lg py-2 text-xs hover:bg-gray-50 transition-colors"
+          >
+            Entrar sin cuenta (solo desarrollo)
+          </button>
+        )}
       </div>
     </div>
   )

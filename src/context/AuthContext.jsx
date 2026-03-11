@@ -29,10 +29,19 @@ export function AuthProvider({ children }) {
   const signIn = (email, password) =>
     supabase.auth.signInWithPassword({ email, password })
 
-  const signOut = () => supabase.auth.signOut()
+  const signOut = () => {
+    setUser(null)
+    setSession(null)
+    return supabase.auth.signOut()
+  }
+
+  const loginAsGuest = () => {
+    setUser({ id: 'guest', email: 'guest@dev.local', isGuest: true })
+    setLoading(false)
+  }
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, signOut, loginAsGuest }}>
       {children}
     </AuthContext.Provider>
   )
